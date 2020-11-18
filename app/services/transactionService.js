@@ -10,13 +10,13 @@ const transactionModel = require('../models/TransactionModel');
 
 const create = async (req, res) => {
   try {
-    const day = req.body.day.toString().padStart(2, '0');
-    const month = req.body.month.toString().padStart(2, '0');
-    const year = req.body.year.toString().padStart(4, '0');
+    const yearMonthDay = req.body.yearMonthDay;
+    const day = yearMonthDay.slice(8, 10);
+    const month = yearMonthDay.slice(5, 7);
+    const year = yearMonthDay.slice(0, 4);
     const yearMonth = `${year}-${month}`;
-    const yearMonthDay = `${year}-${month}-${day}`;
 
-    const transaction = { ...req.body, yearMonth, yearMonthDay };
+    const transaction = { ...req.body, day, month, year, yearMonth };
     const newTransaction = new transactionModel(transaction);
     await newTransaction.save();
     res.send(newTransaction);
@@ -93,9 +93,17 @@ const findDescription = async (req, res) => {
 const update = async (req, res) => {
   try {
     const id = req.params.id;
+
+    const yearMonthDay = req.body.yearMonthDay;
+    const day = yearMonthDay.slice(8, 10);
+    const month = yearMonthDay.slice(5, 7);
+    const year = yearMonthDay.slice(0, 4);
+    const yearMonth = `${year}-${month}`;
+    const alteredTransaction = { ...req.body, day, month, year, yearMonth };
+
     const transaction = await transactionModel.findByIdAndUpdate(
       { _id: id },
-      req.body,
+      alteredTransaction,
       {
         new: true,
       }

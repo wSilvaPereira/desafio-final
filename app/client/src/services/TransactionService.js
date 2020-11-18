@@ -17,13 +17,13 @@ const remove = (id) => {
 //   return http.get(`/grade/${id}`);
 // };
 
-// const create = (data) => {
-//   return http.post('/grade', data);
-// };
+const create = (data) => {
+  return http.post('/api/transaction/', data);
+};
 
-// const update = (id, data) => {
-//   return http.put(`/grade/${id}`, data);
-// };
+const update = (id, data) => {
+  return http.put(`/api/transaction/${id}`, data);
+};
 
 // const removeAll = () => {
 //   return http.delete(`/grade`);
@@ -37,8 +37,8 @@ export default {
   getYearMonth,
   getFromPeriod,
   // get,
-  // create,
-  // update,
+  create,
+  update,
   remove,
   // removeAll,
   // findByName,

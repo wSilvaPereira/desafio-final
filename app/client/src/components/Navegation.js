@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import css from './navegation.module.css';
+import M from 'materialize-css';
 
 export default function Navegation({
   onChangeSelected,
@@ -11,6 +12,10 @@ export default function Navegation({
     const month = formatedYearMonth.slice(5, 7);
     return { year, month };
   };
+
+  useEffect(() => {
+    M.AutoInit();
+  }, [currentPeriod]);
 
   const selectHandleChange = (event) => {
     onChangeSelected(event.target.value);
@@ -40,36 +45,41 @@ export default function Navegation({
   };
   return (
     <div className={`${css.flex}`}>
-      <input
+      <a
         type="button"
         value="<"
         className="waves-effect waves-light btn-small "
         onClick={handleButtonClick}
-      />
-      <select
-        className="browser-default"
-        id="yearMonthSelect"
-        style={{ width: '150px', textAlignLast: 'center' }}
-        onChange={selectHandleChange}
-        value={currentPeriod}
       >
-        {periods.map((item, index) => {
-          const yearMonth = extratYearMonth(item);
-          const year = yearMonth.year;
-          const month = yearMonth.month;
-          return (
-            <option key={index} value={`${item}`}>
-              {`${month}-${year}`}
-            </option>
-          );
-        })}
-      </select>
-      <input
+        {'<'}
+      </a>
+      <div style={{ textAlignLast: 'center' }}>
+        <select
+          // className="browser-default"
+          id="yearMonthSelect"
+          onChange={selectHandleChange}
+          value={currentPeriod}
+        >
+          {periods.map((item, index) => {
+            const yearMonth = extratYearMonth(item);
+            const year = yearMonth.year;
+            const month = yearMonth.month;
+            return (
+              <option key={index} value={`${item}`}>
+                {`${month}-${year}`}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+      <a
         type="button"
         value=">"
         className="waves-effect waves-light btn-small"
         onClick={handleButtonClick}
-      />
+      >
+        {'>'}
+      </a>
     </div>
   );
 }
