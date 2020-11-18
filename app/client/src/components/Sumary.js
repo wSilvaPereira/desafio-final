@@ -9,7 +9,7 @@ export default function Sumary({
   totalBalance,
 }) {
   return (
-    <div className={`${css.flex} row`}>
+    <div className={`${css.flex} row `}>
       <div className="col s3">{`Lançamentos: ${totalTransaction}`}</div>
       <div
         className="col s3 "

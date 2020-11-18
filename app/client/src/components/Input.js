@@ -11,16 +11,16 @@ export default function Input({ onChangeValue, value, onClickOpenModal }) {
   };
 
   return (
-    <div className="row">
+    <div className="row ">
       <div className={`${css.flex}`}>
-        <a
+        <span
           type="button"
           value="+ NOVO LANÇAMENTO"
           className="waves-effect waves-light btn-small"
           onClick={onNewTransactionClick}
         >
           {`NOVA TRANSAÇÃO`}
-        </a>
+        </span>
         <div className="input-field col s10">
           <input
             type="text"

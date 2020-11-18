@@ -45,14 +45,14 @@ export default function Navegation({
   };
   return (
     <div className={`${css.flex}`}>
-      <a
+      <span
         type="button"
         value="<"
         className="waves-effect waves-light btn-small "
         onClick={handleButtonClick}
       >
         {'<'}
-      </a>
+      </span>
       <div style={{ textAlignLast: 'center' }}>
         <select
           // className="browser-default"
@@ -72,14 +72,14 @@ export default function Navegation({
           })}
         </select>
       </div>
-      <a
+      <span
         type="button"
         value=">"
         className="waves-effect waves-light btn-small"
         onClick={handleButtonClick}
       >
         {'>'}
-      </a>
+      </span>
     </div>
   );
 }

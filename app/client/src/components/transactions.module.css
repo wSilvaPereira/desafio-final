@@ -8,6 +8,12 @@
   font-weight: bold;
 }
 
+.flexPagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 .flexInfo {
   display: flex;
   flex-direction: column;

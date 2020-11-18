@@ -183,13 +183,13 @@ export default function ModalTransaction({
               />
             </div>
           </div>
-          <a
+          <span
             className="waves-effect waves-light btn"
             disabled={!canSave}
             onClick={handleSaveClick}
           >
             Salvar
-          </a>
+          </span>
         </div>
       </Modal>
     </div>

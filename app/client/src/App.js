@@ -1,10 +1,12 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Input from './components/Input';
 import ModalTransaction from './components/ModalTransaction';
 import Navegation from './components/Navegation';
 import Sumary from './components/Sumary';
 import Transactions from './components/Transactions';
 import transactionService from './services/TransactionService.js';
+
+const totalItemPerPage = 7;
 
 export default function App() {
   const [allTransactions, setAllTransactions] = useState([]);
@@ -20,6 +22,10 @@ export default function App() {
   const [isIncluding, setIsIncluding] = useState(false);
   const [transactionData, setTransactionData] = useState({});
 
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [paginationTransaction, setPaginationTransaction] = useState([]);
+
   useEffect(() => {
     let yearMonths = [];
     transactionService.getYearMonth().then((response) => {
@@ -34,12 +40,18 @@ export default function App() {
         setCurrentPeriod(`${year}-${month}`);
       }
     });
-  }, []);
+  }, [allTransactions, currentPeriod]);
 
   useEffect(() => {
     if (currentPeriod !== '') {
       transactionService.getFromPeriod(currentPeriod).then((response) => {
-        setAllTransactions(response.data);
+        setAllTransactions(
+          response.data.sort((a, b) => {
+            return b.type.localeCompare(a.type) || a.day - b.day;
+          })
+        );
+        setCurrentPage(0);
+        setCurrentPage(1);
       });
     }
     setCurrentFilter('');
@@ -61,6 +73,8 @@ export default function App() {
           currTotalIn += transaction.value;
         }
       });
+      setTotalPages(Math.ceil(filteredTransactions.length / totalItemPerPage));
+      setCurrentPage(1);
     }
     setTotalIn(currTotalIn);
     setTotalOut(currTotalOut);
@@ -88,6 +102,10 @@ export default function App() {
       transactionService.update(_id, savedTransaction).then((response) => {
         setCurrentPeriod('');
         setCurrentPeriod(currentPeriod);
+        // setCurrentPage(currentPage);
+        // const auxTotal = totalPages;
+        // setTotalPages(0);
+        // setTotalPages(auxTotal);
       });
     }
 
@@ -100,7 +118,7 @@ export default function App() {
       return item.description.toLowerCase().includes(description.toLowerCase());
     });
     setFilteredTransactions(filteredTransaction);
-    console.log(description);
+    // console.log(description);
   };
 
   const onCloseModal = () => {
@@ -134,6 +152,25 @@ export default function App() {
     setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    const lastItem = currentPage * totalItemPerPage;
+    const firstItem = lastItem - (totalItemPerPage - 1);
+
+    const auxVisibleTransaction = [];
+    if (filteredTransactions.length > 0) {
+      for (let i = firstItem - 1; i < lastItem; i++) {
+        if (!!filteredTransactions[i]) {
+          auxVisibleTransaction.push(filteredTransactions[i]);
+        }
+      }
+    }
+    setPaginationTransaction(auxVisibleTransaction);
+  }, [currentPage, totalPages, filteredTransactions]);
+
+  const handleItemPagination = (page) => {
+    setCurrentPage(parseInt(page, 0));
+  };
+
   return (
     <div className="container">
       <h3 style={{ textAlign: 'center' }}>
@@ -147,23 +184,28 @@ export default function App() {
             currentPeriod={currentPeriod}
             periods={periods}
           />
-          <Sumary
-            totalTransaction={totalTransaction}
-            totalIn={totalIn}
-            totalOut={totalOut}
-            totalBalance={totalBalance}
-          />
           <Input
             onChangeValue={inputDescChange}
             value={currentFilter}
             onClickOpenModal={handleModalOpen}
           />
-          <Transactions
-            allTransactions={filteredTransactions}
-            onDeleteTransaction={deleteTransaction}
-            onClickOpenModal={handleModalOpen}
-            totalTransaction={totalTransaction}
-          />
+          <div className="z-depth-3" style={{ padding: '10px' }}>
+            <Sumary
+              totalTransaction={totalTransaction}
+              totalIn={totalIn}
+              totalOut={totalOut}
+              totalBalance={totalBalance}
+            />
+            <Transactions
+              // allTransactions={filteredTransactions}
+              allTransactions={paginationTransaction}
+              onDeleteTransaction={deleteTransaction}
+              onClickOpenModal={handleModalOpen}
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onClickItemPagination={handleItemPagination}
+            />
+          </div>
         </div>
       )}
       {isModalOpen && (
